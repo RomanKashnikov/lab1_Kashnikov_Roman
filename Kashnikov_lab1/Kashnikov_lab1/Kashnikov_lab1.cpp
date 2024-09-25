@@ -21,15 +21,6 @@ struct ORSCharacteristic {
     int efficiency;
 };
 
-/*
-int clear_cin(int& variable) {
-    while (cin.peek() != '\n') {
-        cin.get();
-        continue;
-    }
-    return variable;
-}*/
-
 
 string remove_spaces(string& word) {
     while (word[0] == ' ') {
@@ -160,7 +151,7 @@ void add_ORS(ORSCharacteristic& ors) //2
 };
 
 
-void all_objects(PipeCharacteristic& pipe, ORSCharacteristic& ors, const bool& pipe_flag, const bool& ors_flag) //3
+void all_objects(const PipeCharacteristic& pipe, const ORSCharacteristic& ors, const bool& pipe_flag, const bool& ors_flag) //3
 {
     if (!(pipe_flag || pipe_flag)) {
         cout << "There is no objects." << endl;
@@ -222,7 +213,7 @@ void edit_ORS(ORSCharacteristic& ors, const bool& ors_flag) //5
 };
 
 
-void save(string& fname, PipeCharacteristic& pipe, ORSCharacteristic& ors, const bool& pipe_flag, const bool& ors_flag) //6
+void save(const string& fname, const PipeCharacteristic& pipe, const ORSCharacteristic& ors, const bool& pipe_flag, const bool& ors_flag) //6
 {
     ofstream fout;
     fout.open(fname);
@@ -283,7 +274,7 @@ void save(string& fname, PipeCharacteristic& pipe, ORSCharacteristic& ors, const
 };
 
 
-void install(string& fname, PipeCharacteristic& pipe, ORSCharacteristic& ors, bool& pipe_flag, bool& ors_flag) //7
+void install(const string& fname, PipeCharacteristic& pipe, ORSCharacteristic& ors, bool& pipe_flag, bool& ors_flag) //7
 {
     ifstream fin;
     fin.open(fname, ofstream::app);
