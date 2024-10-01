@@ -11,7 +11,7 @@ struct PipeCharacteristic {
     string name;
     int length;
     int diameter;
-    int repair;
+    bool repair;
 };
 
 struct ORSCharacteristic {
@@ -22,199 +22,158 @@ struct ORSCharacteristic {
 };
 
 
-string remove_spaces(string& word) {
+void remove_spaces(string& word) {
     while (word[0] == ' ') {
         word.erase(0, 1);
     }
     while (word[word.length() - 1] == ' ') {
         word.erase(word.length() - 1, 1);
     }
-    return word;
 }
 
 
-int input_number(string type, bool is_zero) {
+int input_validation(int min, int max) {
     bool flag;
-    int number;
     string number_str;
     cin.clear();
     getline(cin, number_str);
 
-    if (type == "single") {
-        while (1) {
-            flag = false;
-            if (number_str.length() != 1) {
-                flag = true;
-            }
-            if (number_str[0] < '0' || number_str[0] > '9') {
-                flag = true;
-            }
-            if (flag) {
-                cout << "Try another value:  ";
-                cin.clear();
-                getline(cin, number_str);
-                continue;
-            }
-            number = atoi(number_str.c_str());
-            return number;
-        }
-    }
+    while (1) {
+        flag = false;
 
-    if (type == "infinite") {
-        while (1) {
-            flag = false;
+        if (number_str.length() == 0) {
+            flag = true;
+        }
+        if (1) {
             for (int i = 0; i < number_str.length(); i++) {
                 if (number_str[i] < '0' || number_str[i] > '9') {
                     flag = true;
                     break;
                 }
             }
-            
-            if (is_zero) {
-                if (number_str.length() == 0) {
-                    flag = true;
-                }
-            }
-            else {
-                if (number_str.length() == 0 || number_str[0] == '0') {
-                    flag = true;
-                }
-            }
-            if (flag) {
-                cout << "Try another value:  ";
-                cin.clear();
-                getline(cin, number_str);
-                continue;
-            }
-            number = atoi(number_str.c_str());
-            return number;
         }
+        if (((min != 0 || number_str.length() != 1) && number_str[0] == '0') || (atoi(number_str.c_str()) < min || atoi(number_str.c_str()) > max)) {
+            flag = true;
+        }
+        
+        if (flag) {
+            cout << "Try another value:  ";
+            cin.clear();
+            getline(cin, number_str);
+            continue;
+        }
+
+        return atoi(number_str.c_str());
     }
+}
+
+
+void name_validation(string& name) {
+    cout << "Enter name:  ";
+    getline(cin, name);
+    while (name.length() == 0) {
+        cout << "Input error, enter name:  ";
+        getline(cin, name);
+    }
+    remove_spaces(name);
 }
 
 
 void add_pipe(PipeCharacteristic& pipe) //1
 {
-    cout << "Add a pipe:\n" << endl;
+    cout << "Add a pipe:" << endl << endl;
 
-    cout << "Enter name:  ";
-    getline(cin, pipe.name);
-    while (pipe.name.length() == 0) {
-        cout << "Input error, enter name:  ";
-        getline(cin, pipe.name);
-    }
-    pipe.name = remove_spaces(pipe.name);
+    name_validation(pipe.name);
 
     cout << "Enter length:  ";       
-    pipe.length = input_number("infinite", 0);
+    pipe.length = input_validation(1, 2147483647);
 
     cout << "Enter diameter:  ";
-    pipe.diameter = input_number("infinite", 0);
+    pipe.diameter = input_validation(1, 2147483647);
 
     cout << "Is the pipe being repaired? (1-Yes/0-No):  ";
-    pipe.repair = input_number("single", 0);
-    while (pipe.repair != 0 && pipe.repair != 1) {
-        cout << "Try another value:  ";
-        pipe.repair = input_number("single", 0);
-    }
-};
+    pipe.repair = input_validation(0, 1);
+}
 
 
 void add_ORS(ORSCharacteristic& ors) //2
 {
-    cout << "Add a ORS:\n" << endl;
+    cout << "Add a ORS:" << endl << endl;
 
-    cout << "Enter name:  ";
-    getline(cin, ors.name);
-    while (ors.name.length() == 0) {
-        cout << "Input error, enter name:  ";
-        getline(cin, ors.name);
-    }
-    ors.name = remove_spaces(ors.name);
+    name_validation(ors.name);
 
     cout << "Enter amount of workspaces:  ";
-    ors.amount_of_workspaces = input_number("infinite", 0);
+    ors.amount_of_workspaces = input_validation(1, 2147483647);
 
     cout << "Workspaces in work:  ";
-    ors.workspaces_in_work = input_number("infinite", 1);
-    while (ors.workspaces_in_work > ors.amount_of_workspaces) {
-        cout << "You have entered less workspaces.\nEnter another value:  ";
-        ors.workspaces_in_work = input_number("infinite", 1);
-    }
+    ors.workspaces_in_work = input_validation(0, ors.amount_of_workspaces);
 
     cout << "Efficiency of ORS (0-100):  ";
-    ors.efficiency = input_number("infinite", 1);
-    while (ors.efficiency > 100) {
-        cout << "Enter a value from 0 to 100:  ";
-        ors.efficiency = input_number("infinite", 1);
-    }
-};
+    ors.efficiency = input_validation(0, 100);
+}
 
 
-void all_objects(const PipeCharacteristic& pipe, const ORSCharacteristic& ors, const bool& pipe_flag, const bool& ors_flag) //3
+void veiw_pipe(const PipeCharacteristic& pipe) {
+    cout << "Pipe" << endl;
+    cout << "Name:  " << pipe.name << endl;
+    cout << "Length:  " << pipe.length << endl;
+    cout << "Diameter:  " << pipe.diameter << endl;
+    cout << "Is in repair:  " << ((pipe.repair) ? "Yes" : "No") << endl << endl;
+}
+
+void veiw_ors(const ORSCharacteristic& ors) {
+    cout << "ORS" << endl;
+    cout << "Name:  " << ors.name << endl;
+    cout << "Amount of workspaces:  " << ors.amount_of_workspaces << endl;
+    cout << "Workspaces in work:  " << ors.workspaces_in_work << endl;
+    cout << "Efficiency:  " << ors.efficiency << "%" << endl << endl;
+}
+
+void veiw_objects(const PipeCharacteristic& pipe, const ORSCharacteristic& ors, bool pipe_flag, bool ors_flag) //3
 {
     if (!(pipe_flag || pipe_flag)) {
         cout << "There is no objects." << endl;
     }
-    if (pipe_flag) {
-        cout << "Pipe" << endl;
-        cout << "Name:  " << pipe.name << endl;
-        cout << "Length:  " << pipe.length << endl;
-        cout << "Diameter:  " << pipe.diameter << endl;
-        if (pipe.repair == 0) { cout << "Is in repair:  No\n" << endl; }
-        if (pipe.repair == 1) { cout << "Is in repair:  Yes\n" << endl; }
+    else {
+        if (pipe_flag) {
+            veiw_pipe(pipe);
+        }
+        if (ors_flag) {
+            veiw_ors(ors);
+        }
     }
-    if (ors_flag) {
-        cout << "ORS" << endl;
-        cout << "Name:  " << ors.name << endl;
-        cout << "Amount of workspaces:  " << ors.amount_of_workspaces << endl;
-        cout << "Workspaces in work:  " << ors.workspaces_in_work << endl;
-        cout << "Efficiency:  " << ors.efficiency << "%\n" << endl;
-    }
-    cout << "\n";
-    system("pause");
-}; 
+}
 
 
-void edit_pipe(PipeCharacteristic& pipe, const bool& pipe_flag) //4
+void edit_pipe(PipeCharacteristic& pipe, bool pipe_flag) //4
 {
     if (pipe_flag) {
-        cout << "Changing status for Pipe:\n" << endl;
+        cout << "Changing status for Pipe:" << endl << endl;
         cout << "Is the pipe being repaired? (1-Yes/0-No):  ";
-        pipe.repair = input_number("single", 0);
-        while (pipe.repair != 0 && pipe.repair != 1) {
-            cout << "Try another value:  ";
-            pipe.repair = input_number("single", 0);
-        }
+
+        pipe.repair = input_validation(0, 1);
     }
     else {
-        cout << "There is no Pipe to change.\n" << endl;
-        system("pause");
+        cout << "There is no Pipe to change." << endl;
     }
-};
+}
 
 
-void edit_ORS(ORSCharacteristic& ors, const bool& ors_flag) //5
+void edit_ORS(ORSCharacteristic& ors, bool ors_flag) //5
 {
     if (ors_flag) {
-        cout << "Changing workspaces in work for ORS:\n" << endl;
+        cout << "Changing workspaces in work for ORS:" << endl << endl;
         cout << "Enter a value less than or equal to " << ors.amount_of_workspaces << " :  ";
-        ors.workspaces_in_work = input_number("infinite", 1);
-        while (ors.workspaces_in_work > ors.amount_of_workspaces) {
-            cout << "You entered a value greater than the number of workspaces.\nEnter a value less than or equal to " << ors.amount_of_workspaces << " :  ";
-            ors.workspaces_in_work = input_number("infinite", 1);
-        }
+
+        ors.workspaces_in_work = input_validation(0, ors.amount_of_workspaces);
     }
     else {
-        cout << "There is no ORS to change.\n" << endl;
-        system("pause");
-    }
-    
-};
+        cout << "There is no ORS to change." << endl;
+    }   
+}
 
 
-void save(const string& fname, const PipeCharacteristic& pipe, const ORSCharacteristic& ors, const bool& pipe_flag, const bool& ors_flag) //6
-{
+void save_pipe(const string& fname, const PipeCharacteristic& pipe) {
     ofstream fout;
     fout.open(fname);
 
@@ -222,75 +181,87 @@ void save(const string& fname, const PipeCharacteristic& pipe, const ORSCharacte
         cout << "Open file error." << endl;
     }
     else {
-        if (pipe_flag && ors_flag) {
-            fout << "Pipe:" << endl;
-            fout << pipe.name << endl;
-            fout << pipe.length << endl;
-            fout << pipe.diameter << endl;
-            fout << pipe.repair << endl;
-
-            fout << "\n";
-
-            fout << "ORS:" << endl;
-            fout << ors.name << endl;
-            fout << ors.amount_of_workspaces << endl;
-            fout << ors.workspaces_in_work << endl;
-            fout << ors.efficiency << endl;
-
-            fout.close();
-            cout << "Objects saved.\n" << endl;
-            system("pause");
-        }
-        else if (pipe_flag) {
-            fout << "Pipe:" << endl;
-            fout << pipe.name << endl;
-            fout << pipe.length << endl;
-            fout << pipe.diameter << endl;
-            fout << pipe.repair << endl;
-
-            fout << "\n";
-
-            fout.close();
-            cout << "Objects saved.\n" << endl;
-            system("pause");
-        }
-        else if (ors_flag) {
-            fout << "ORS:" << endl;
-            fout << ors.name << endl;
-            fout << ors.amount_of_workspaces << endl;
-            fout << ors.workspaces_in_work << endl;
-            fout << ors.efficiency << endl;
-
-            fout.close();
-            cout << "Objects saved.\n" << endl;
-            system("pause");
-        }
-        else {
-            fout.close();
-            cout << "There is no objects to save.\n" << endl;
-            system("pause");
-        }
+        fout << "Pipe:" << endl;
+        fout << pipe.name << endl;
+        fout << pipe.length << endl;
+        fout << pipe.diameter << endl;
+        fout << pipe.repair << endl << endl;
     }
-};
+    fout.close();
+}
+
+void save_ors(const string& fname, const ORSCharacteristic& ors) {
+    ofstream fout;
+    fout.open(fname);
+
+    if (!fout.is_open()) {
+        cout << "Open file error." << endl;
+    }
+    else {
+        fout << "ORS:" << endl;
+        fout << ors.name << endl;
+        fout << ors.amount_of_workspaces << endl;
+        fout << ors.workspaces_in_work << endl;
+        fout << ors.efficiency << endl << endl;
+    }
+    fout.close();
+}
+
+void save_all(const string& fname, const PipeCharacteristic& pipe, const ORSCharacteristic& ors) {
+    ofstream fout;
+    fout.open(fname);
+
+    if (!fout.is_open()) {
+        cout << "Open file error." << endl;
+    }
+    else {
+        fout << "Pipe:" << endl;
+        fout << pipe.name << endl;
+        fout << pipe.length << endl;
+        fout << pipe.diameter << endl;
+        fout << pipe.repair << endl << endl;
+
+        fout << "ORS:" << endl;
+        fout << ors.name << endl;
+        fout << ors.amount_of_workspaces << endl;
+        fout << ors.workspaces_in_work << endl;
+        fout << ors.efficiency << endl << endl;
+    }
+    fout.close();
+}
+
+void save(const string& fname, const PipeCharacteristic& pipe, const ORSCharacteristic& ors, bool pipe_flag, bool ors_flag) //6
+{
+    if (pipe_flag && ors_flag) {
+        save_all(fname, pipe, ors);
+    }
+    else if (pipe_flag) {
+        save_pipe(fname, pipe);
+    }
+    else if (ors_flag) {
+        save_ors(fname, ors);
+    }
+    
+    (ors_flag || pipe_flag) ? cout << "Objects saved." << endl << endl: cout << "There is no objects to save." << endl << endl;
+}
 
 
-void install(const string& fname, PipeCharacteristic& pipe, ORSCharacteristic& ors, bool& pipe_flag, bool& ors_flag) //7
+void download(const string& fname, PipeCharacteristic& pipe, ORSCharacteristic& ors, bool& pipe_flag, bool& ors_flag) //7
 {
     ifstream fin;
-    fin.open(fname, ofstream::app);
+    fin.open(fname);
     string line;
-    bool flag = true;
 
     if (!fin.is_open()) {
         cout << "Open file error." << endl;
     }
     else {
-        cout << "Installed objects:\n" << endl;
+        pipe_flag = ors_flag = false;
+        cout << "Installed objects:" << endl << endl;
         while (getline(fin, line)) {
-            flag = false;
             if (line == "Pipe:") {
                 pipe_flag = true;
-                cout << "Pipe" << endl;
+                cout << "Pipe:" << endl;
                 getline(fin, line);
                 pipe.name = line;
                 cout << pipe.name << endl;
@@ -302,12 +273,11 @@ void install(const string& fname, PipeCharacteristic& pipe, ORSCharacteristic& o
                 cout << pipe.diameter << endl;
                 getline(fin, line);
                 pipe.repair = atoi(line.c_str());
-                cout << pipe.repair << endl;
-                cout << "\n";
+                cout << pipe.repair << endl << endl;
             }
             if (line == "ORS:") {
                 ors_flag = true;
-                cout << "ORS" << endl;
+                cout << "ORS:" << endl;
                 getline(fin, line);
                 ors.name = line;
                 cout << ors.name << endl;
@@ -319,17 +289,14 @@ void install(const string& fname, PipeCharacteristic& pipe, ORSCharacteristic& o
                 cout << ors.workspaces_in_work << endl;
                 getline(fin, line);
                 ors.efficiency = atoi(line.c_str());
-                cout << ors.efficiency << endl;
-                cout << "\n";
+                cout << ors.efficiency << endl << endl;
             }
         }
-        if (flag) {
-            cout << "There is no objects.\n" << endl;
+        if (!pipe_flag && !ors_flag) {
+            cout << "There is no objects." << endl << endl;
         }
     }
-    cout << "\n";
-    system("pause");
-};
+}
 
 
 void menu()
@@ -342,7 +309,7 @@ void menu()
     cout << "5 - Edit ORS(Oil Refinery Station)" << endl;
     cout << "6 - Save" << endl;
     cout << "7 - Install" << endl;
-    cout << "0 - Exit\n" << endl;
+    cout << "0 - Exit" << endl << endl;
 }
 
 
@@ -356,62 +323,44 @@ int main() {
     PipeCharacteristic pipe = { "", 0, 0, 0 };
     ORSCharacteristic ors = { "", 0, 0, 0 };
 
-    menu();
     while (1) {
+        menu();
         cout << "Choose the option:  ";
-        option = input_number("single", 0);
-        while (option > 7) {
-            cout << "Try another value:  ";
-            option = input_number("single", 0);
-        }
 
-
+        option = input_validation(0, 7);
         system("cls");
+
         switch (option) {
         case 0:
-            system("cls");
             cout << "App is closed" << endl;
             return 0;
         case 1:
             add_pipe(pipe);
             pipe_flag = true;
-            system("cls");
-            menu();
             break;
         case 2:
             add_ORS(ors);
             ors_flag = true;
-            system("cls");
-            menu();
             break;
         case 3:
-            all_objects(pipe, ors, pipe_flag, ors_flag);
-            system("cls");
-            menu();
+            veiw_objects(pipe, ors, pipe_flag, ors_flag);
             break;
         case 4:
             edit_pipe(pipe, pipe_flag);
-            system("cls");
-            menu();
             break;
         case 5:
             edit_ORS(ors, ors_flag);
-            system("cls");
-            menu();
             break;
         case 6:
             save(fname, pipe, ors, pipe_flag, ors_flag);
-            system("cls");
-            menu();
             break;
         case 7:
-            install(fname, pipe, ors, pipe_flag, ors_flag);
-            system("cls");
-            menu();
+            download(fname, pipe, ors, pipe_flag, ors_flag);
             break;
-        default:
-            cout << "There is no such value in the list, select an option from menu.\n" << endl;
         }
+        cout << endl;
+        system("pause");
+        system("cls");
     }
 }
     
