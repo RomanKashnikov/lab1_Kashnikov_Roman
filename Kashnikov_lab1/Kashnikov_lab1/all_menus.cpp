@@ -20,16 +20,20 @@ void menu()
 void pipe_menu() {
     cout << "Editing list of Pipes" << endl << endl;
     cout << "1 - Add a pipe" << endl;
-    cout << "2 - Edit pipes by filter" << endl;
-    cout << "3 - Delete pipes by filter" << endl;
+    cout << "2 - Choose pipes' ids from filter" << endl;
+    cout << "3 - Edit pipes by filter" << endl;
+    cout << "4 - Delete pipes by filter" << endl;
+    cout << "5 - Veiw pipes" << endl;
     cout << "0 - Back" << endl << endl;
 }
 
 void cs_menu() {
     cout << "Editing list of Compressor Stations" << endl << endl;
     cout << "1 - Add a CS" << endl;
-    cout << "2 - Edit package of CS by filter" << endl;
-    cout << "3 - Delete CS by filter" << endl;
+    cout << "2 - Choose CS' ids from filter" << endl;
+    cout << "3 - Edit package of CS by filter" << endl;
+    cout << "4 - Delete CS by filter" << endl;
+    cout << "5 - Veiw CS" << endl;
     cout << "0 - Back" << endl << endl;
 }
 

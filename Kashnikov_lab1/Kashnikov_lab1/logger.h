@@ -5,10 +5,22 @@
 
 using namespace std;
 
-class Logger {
-private:
-    ofstream logfile;
+
+class redirect_output_wrapper
+{
+    ostream& stream;
+    streambuf* const old_buf;
 public:
-    Logger(const string& file_name);
-    ~Logger();
+    redirect_output_wrapper(ostream& src)
+        :old_buf(src.rdbuf()), stream(src)
+    {
+    }
+
+    ~redirect_output_wrapper() {
+        stream.rdbuf(old_buf);
+    }
+    void redirect(ostream& dest)
+    {
+        stream.rdbuf(dest.rdbuf());
+    }
 };

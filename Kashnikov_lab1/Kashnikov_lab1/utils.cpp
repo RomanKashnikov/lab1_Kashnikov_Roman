@@ -30,12 +30,13 @@ void name_validation(string& name) {
 
 
 void save_objects(const unordered_map<int, Pipe>& AllPipe, const unordered_map<int, CS>& AllCS) {
+    string path_to_file;
     int counter = 0;
 
-    //cout << "file name: ";
-    //name_validation(path_to_file);
+    cout << "Save in ... .txt" << endl;
+    name_validation(path_to_file);
 
-    ofstream file("objects/objects.txt");
+    ofstream file("objects/" + path_to_file + ".txt");
 
     if (file.is_open()) {
         file << Pipe::get_MaxID() << endl;
@@ -66,9 +67,13 @@ void save_objects(const unordered_map<int, Pipe>& AllPipe, const unordered_map<i
 }
 
 void download_objects(unordered_map<int, Pipe>& AllPipe, unordered_map<int, CS>& AllCS, unordered_set<int>& FilteredPipe, unordered_set<int>& FilteredCS) {
+    string path_to_file;
     int counter = 0;
 
-    ifstream file("objects/objects.txt");
+    cout << "Download from ... .txt" << endl;
+    name_validation(path_to_file);
+
+    ifstream file("objects/" + path_to_file + ".txt");
 
     if (file.is_open()) {
         AllPipe.clear();

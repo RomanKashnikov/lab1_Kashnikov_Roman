@@ -2,6 +2,8 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include <chrono>
+#include <format>
 
 #include "pipe.h"
 #include "cs.h"
@@ -10,7 +12,10 @@
 #include "all_menus.h"
 #include "logger.h"
 
+
 using namespace std;
+using namespace chrono;
+
 
 
 void pause() {
@@ -30,7 +35,12 @@ int main() {
     unordered_set<int> FilteredPipe;
     unordered_set<int> FilteredCS;
 
-    Logger logger("story.txt");
+    redirect_output_wrapper cerr_out(cerr);
+    string time = format("{:%d_%m_%Y %H_%M_%OS}", system_clock::now());
+    ofstream logfile("logger/log_" + time);
+    if (logfile)
+        cerr_out.redirect(logfile);
+    //Logger logger("story.txt");
 
     while (1) {
         menu();
@@ -46,7 +56,7 @@ int main() {
             do {
                 pipe_menu();
 
-                option = input_validation<int>("Choose the option:  ", 0, 3);
+                option = input_validation<int>("Choose the option:  ", 0, 5);
                 system("cls");
 
                 switch (option) {
@@ -54,10 +64,22 @@ int main() {
                     add_object(AllPipe);
                     break;
                 case 2:
-                    package_edit_pipe(AllPipe, FilteredPipe);
+                    if (!FilteredPipe.empty()) {
+                        FilteredPipe = filter_by_id(FilteredPipe);
+                    }
+                    else {
+                        cout << "No filtered pipes" << endl << endl;
+                    }
                     break;
                 case 3:
+                    package_edit_pipe(AllPipe, FilteredPipe);
+                    break;
+                case 4:
                     delete_by_filter(AllPipe, FilteredPipe);
+                    break;
+                case 5:
+                    veiw_all("------------------------------\n          All Pipes\n------------------------------", AllPipe);
+                    veiw_filtered("------------------------------\n        Filtered Pipes\n------------------------------", AllPipe, FilteredPipe);
                     break;
                 }
                 if (option) {
@@ -69,7 +91,7 @@ int main() {
             do {
                 cs_menu();
 
-                option = input_validation<int>("Choose the option:  ", 0, 3);
+                option = input_validation<int>("Choose the option:  ", 0, 5);
                 system("cls");
 
                 switch (option) {
@@ -77,10 +99,22 @@ int main() {
                     add_object(AllCS);
                     break;
                 case 2:
-                    package_edit_cs(AllCS, FilteredCS);
+                    if (!FilteredCS.empty()) {
+                        FilteredCS = filter_by_id(FilteredCS);
+                    }
+                    else {
+                        cout << "No filtered CS" << endl << endl;
+                    }
                     break;
                 case 3:
+                    package_edit_cs(AllCS, FilteredCS);
+                    break;
+                case 4:
                     delete_by_filter(AllCS, FilteredCS);
+                    break;
+                case 5:
+                    veiw_all("------------------------------\n   All Compressor Stations\n------------------------------", AllCS);
+                    veiw_filtered("------------------------------\n Filtered Compressor Stations\n------------------------------", AllCS, FilteredCS);
                     break;
                 }
                 if (option) {
