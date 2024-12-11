@@ -1,38 +1,50 @@
-#include <unordered_map>
-#include <unordered_set>
-
+#include <iostream>
 #include "filter.h"
-#include "utils.h"
-#include "pipe.h"
-#include "cs.h"
-
 
 using namespace std;
 
 
-bool check_status_of_repair(const Pipe& pipe, const bool is_repair) {
+bool GTNetwork::check_status_of_repair(const Pipe& pipe, const bool& is_repair) {
     return pipe.get_repair() == is_repair;
 }
 
 
-void filter_by_status_of_repair(const unordered_map<int, Pipe>& pipes, unordered_set<int>& selected_pipes) {
-    cout << "Filter by repair status" << endl << endl;
+bool GTNetwork::find_by_status_in_repair() {
+    cout << "working status(0 - no / 1 - yes): ";
+    bool work_status = input_validation<bool>("Repair status (1-Yes/0-No):  ", 0, 1);
 
-    int work_status = input_validation<bool>("Repair status (1-Yes/0-No):  ", 0, 1);
-
-    find_by_filter<Pipe, bool>(pipes, selected_pipes, check_status_of_repair, work_status);
+    this->find_by_filter<Pipe, bool>(AllPipe, FilteredPipe, &GTNetwork::check_status_of_repair, work_status);
+    return 1;
 }
 
 
-bool check_percent_in_work(const CS& cs, const int percent) {
+bool GTNetwork::check_percent_in_work(const CS& cs, const int& percent) {
     return cs.get_workload() == percent;
 }
 
 
-void filter_by_percent_in_work(const unordered_map<int, CS>& cs, unordered_set<int>& selected_cs) {
+bool GTNetwork::find_by_percent_in_work() {
     cout << "Filter by percent of workspaces in work" << endl << endl;
 
     int percent = input_validation<int>("Enter percent (0-100):  ", 0, 100);
 
-    find_by_filter<CS, int>(cs, selected_cs, check_percent_in_work, percent);
+    this->find_by_filter<CS, int>(AllCS, FilteredCS, &GTNetwork::check_percent_in_work, percent);
+    return 1;
+}
+
+
+bool GTNetwork::check_by_diameter(const Pipe& pipe, const int& diameter) {
+    return pipe.get_diameter() == diameter;
+}
+
+
+int GTNetwork::find_by_diameter(const int& diameter) {
+    for (const auto& [id, pipe] : this->AllPipe) {
+        if (!pipe.InUsing() && this->check_by_diameter(pipe, diameter)) return pipe.get_id();
+    }
+
+    Pipe pipe(diameter);
+    this->AllPipe.emplace(pipe.get_id(), pipe);
+
+    return pipe.get_id();
 }

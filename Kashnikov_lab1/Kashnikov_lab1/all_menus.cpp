@@ -9,11 +9,12 @@ void menu()
     cout << "Menu:" << endl;
     cout << "1 - Edit list of Pipes" << endl;
     cout << "2 - Edit list of CS" << endl;
-    cout << "3 - Filter Pipes" << endl;
-    cout << "4 - Filter CS" << endl;
-    cout << "5 - View objects" << endl;
-    cout << "6 - Save objects" << endl;
-    cout << "7 - Download objects" << endl;
+    cout << "3 - Edit GTNetwork" << endl;
+    cout << "4 - Filter Pipes" << endl;
+    cout << "5 - Filter CS" << endl;
+    cout << "6 - View objects" << endl;
+    cout << "7 - Save objects" << endl;
+    cout << "8 - Download objects" << endl;
     cout << "0 - Exit" << endl << endl;
 }
 
@@ -50,7 +51,6 @@ void filter_pipes() {
     cout << "2 - By id" << endl;
     cout << "3 - By name" << endl;
     cout << "4 - By status in repair" << endl;
-    cout << "5 - Clear filter" << endl << endl;
     cout << "0 - Back" << endl << endl;
 }
 
@@ -61,5 +61,23 @@ void filter_cs() {
     cout << "3 - By name" << endl;
     cout << "4 - By percentage of workspaces in work" << endl;
     cout << "5 - Clear filter" << endl << endl;
+    cout << "0 - Back" << endl << endl;
+}
+
+void gtn_menu() {
+    cout << "GTNetwork menu" << endl << endl;
+    cout << "1 - Create graph" << endl;
+    cout << "2 - Make TS" << endl;
+    cout << "3 - Edit GTN" << endl;
+    cout << "4 - Print graph" << endl << endl;
+    cout << "0 - Back" << endl << endl;
+}
+
+void edit_gtn_menu() {
+    cout << "Edit GTN" << endl;
+    cout << "1 - Add node" << endl;
+    cout << "2 - Delete pipes" << endl;
+    cout << "3 - Delete CSs" << endl;
+    cout << "4 - Clear graph" << endl << endl;
     cout << "0 - Back" << endl << endl;
 }

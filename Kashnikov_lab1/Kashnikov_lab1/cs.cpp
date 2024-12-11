@@ -6,6 +6,7 @@
 #include "cs.h"
 #include "utils.h"
 
+
 using namespace std;
 
 
@@ -23,26 +24,36 @@ int CS::get_id() const {
 string CS::get_name() const {
     return this->name;
 }
-/*
-int CS::get_amount_of_workspaces() const {
-    return this->amount_of_workspaces;
-}
 
-int CS::get_workspaces_in_work() const {
-    return this->workspaces_in_work;
-}
-
-int CS::get_efficiency() const {
-    return this->efficiency;
-}
-*/
 int CS::get_workload() const {
     return (100 * workspaces_in_work / amount_of_workspaces);
 }
-/*
-void CS::set_workspaces_in_work(int new_workspaces_in_work) {
-    this->workspaces_in_work = new_workspaces_in_work;
-}*/
+
+vector<unordered_set<int>> CS::get_links() const {
+    return this->links;
+}
+
+void CS::set_links(ifstream& file, const int& pos) {
+    string line;
+    getline(file >> ws, line);
+    istringstream iss(line);
+    int id;
+    while (iss >> id)
+        if (id)
+            this->links[pos].emplace(id);
+    file.clear();
+}
+
+bool CS::addLink(const int& pos, const int& id) {
+    this->links[pos].emplace(id);
+    return 1;
+}
+
+
+bool CS::delLink(const int& pos, const int& id) {
+    this->links[pos].erase(id);
+    return 1;
+}
 
 void CS::start_workspace() {
     if (workspaces_in_work != amount_of_workspaces) {
@@ -60,6 +71,9 @@ void CS::set_MaxID(const int new_MaxID) {
     CS::MaxID = new_MaxID;
 }
 
+bool CS::InUsing() const {
+    return (this->links[0].size()) || (this->links[1].size());
+}
 
 void CS::save(ofstream& file) const {
     file << "CS" << endl;
@@ -68,6 +82,15 @@ void CS::save(ofstream& file) const {
     file << this->amount_of_workspaces << endl;
     file << this->workspaces_in_work << endl;
     file << this->efficiency << endl;
+
+    if (this->links[0].size())
+        for (const auto& id : this->links[0]) file << id << " ";
+    else file << 0;
+    file << endl;
+    if (this->links[1].size())
+        for (const auto& id : this->links[1]) file << id << " ";
+    else file << 0;
+    //file << endl;
 }
 
 
@@ -86,6 +109,10 @@ CS::CS(ifstream& file) {
     file >> this->amount_of_workspaces;
     file >> this->workspaces_in_work;
     file >> this->efficiency;
+
+    file.ignore(10000, '\n');
+    this->set_links(file, 0);
+    this->set_links(file, 1);
 }
 
 
@@ -109,6 +136,15 @@ ostream& operator<<(ostream& out, const CS& cs) {
            "Amount of workspaces: " << cs.amount_of_workspaces << endl <<
            "Workspaces in work: " << cs.workspaces_in_work << endl <<
            "Efficiency: " << cs.efficiency << "%" << endl << endl;
+
+    out << "links{" << endl;
+    out << "   " << "in: ";
+    for (const auto& id : cs.links[0]) out << id << " ";
+    out << endl;
+    out << "   " << "out: ";
+    for (const auto& id : cs.links[1]) out << id << " ";
+    out << endl;
+    out << "}" << endl;
     return out;
 }
 

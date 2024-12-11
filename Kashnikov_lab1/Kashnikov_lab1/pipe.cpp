@@ -23,17 +23,22 @@ int Pipe::get_id() const {
 string Pipe::get_name() const {
     return this->name;
 }
-/*
-double Pipe::get_lenght() const {
-    return this->lenght;
-}
 
 int Pipe::get_diameter() const {
     return this->diameter;
 }
-*/
+
 bool Pipe::get_repair() const {
     return this->repair;
+}
+
+vector<int> Pipe::get_links() const {
+    return this->links;
+}
+
+bool Pipe::set_links(const int& out, const int& in) {
+    this->links = {out, in};
+    return 1;
 }
 
 void Pipe::set_repair(const bool new_repair) {
@@ -44,6 +49,32 @@ void Pipe::set_MaxID(const int new_MaxID){
     Pipe::MaxID = new_MaxID;
 }
 
+bool Pipe::InUsing() const {
+    return (this->links[0]) || (this->links[1]);
+}
+
+Pipe::Pipe() {
+    id = ++MaxID;
+    lenght = 0;
+    diameter = 0;
+    repair = false;
+    name = "No Name";
+}
+
+Pipe::Pipe(const int dmtr) {
+    cout << "Add a Pipe:" << endl << endl;
+
+    cout << "Diameter:  " << dmtr << endl << endl;
+
+    name_validation(name);
+
+    lenght = input_validation<double>("Input lenght:  ", 0.000001, 2147483647);
+
+    diameter = dmtr;
+
+    repair = input_validation<bool>("Is in repair? (1-Yes/0-No):  ", 0, 1);
+}
+
 void Pipe::save(ofstream& file) const {
     file << "Pipe" << endl;
     file << this->id << endl;
@@ -51,14 +82,8 @@ void Pipe::save(ofstream& file) const {
     file << this->lenght << endl;
     file << this->diameter << endl;
     file << this->repair << endl;
-}
-
-Pipe::Pipe() {
-    id = ++MaxID;
-    diameter = 0;
-    lenght = 0;
-    repair = false;
-    name = "No Name";
+    file << this->links[0] << endl;
+    file << this->links[1] << endl;
 }
 
 Pipe::Pipe(ifstream& file) {
@@ -68,6 +93,8 @@ Pipe::Pipe(ifstream& file) {
     file >> this->lenght;
     file >> this->diameter;
     file >> this->repair;
+    file >> this->links[0];
+    file >> this->links[1];
 }
 
 
@@ -90,7 +117,14 @@ ostream& operator<<(ostream& out, const Pipe& pipe) {
         "Name: " << pipe.name << endl <<
         "Diameter: " << pipe.diameter << endl <<
         "Lenght: " << pipe.lenght << endl <<
-        "Status of repair: " << (pipe.repair ? "Yes" : "No") << endl << endl;
+        "Status of repair: " << (pipe.repair ? "Yes" : "No") << endl << endl
+        
+        << "Links{" << endl
+        << "   " << "out: "
+        << pipe.links[0] << " " << endl
+        << "   " << "in: "
+        << pipe.links[1] << " "
+        << endl << "}" << endl;
     return out;
 }
 

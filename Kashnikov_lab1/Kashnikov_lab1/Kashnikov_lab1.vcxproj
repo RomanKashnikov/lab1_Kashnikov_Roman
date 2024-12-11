@@ -22,7 +22,7 @@
     <ClCompile Include="all_menus.cpp" />
     <ClCompile Include="cs.cpp" />
     <ClCompile Include="filter.cpp" />
-    <ClCompile Include="logger.cpp" />
+    <ClCompile Include="GTNetwork.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pipe.cpp" />
     <ClCompile Include="utils.cpp" />
@@ -31,6 +31,8 @@
     <ClInclude Include="all_menus.h" />
     <ClInclude Include="cs.h" />
     <ClInclude Include="filter.h" />
+    <ClInclude Include="GTNetwork.h" />
+    <ClInclude Include="Kan_by_Volkov.h" />
     <ClInclude Include="logger.h" />
     <ClInclude Include="pipe.h" />
     <ClInclude Include="utils.h" />

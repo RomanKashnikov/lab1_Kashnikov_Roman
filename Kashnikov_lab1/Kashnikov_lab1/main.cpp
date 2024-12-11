@@ -11,6 +11,7 @@
 #include "filter.h"
 #include "all_menus.h"
 #include "logger.h"
+#include "GTNetwork.h"
 
 
 using namespace std;
@@ -26,26 +27,18 @@ void pause() {
 
 int main() {
     int option;
-
-    string fname = "objects.txt";
-
-    unordered_map<int, Pipe> AllPipe;
-    unordered_map<int, CS> AllCS;
-
-    unordered_set<int> FilteredPipe;
-    unordered_set<int> FilteredCS;
+    GTNetwork gtn;
 
     redirect_output_wrapper cerr_out(cerr);
     string time = format("{:%d_%m_%Y %H_%M_%OS}", system_clock::now());
     ofstream logfile("logger/log_" + time);
     if (logfile)
         cerr_out.redirect(logfile);
-    //Logger logger("story.txt");
 
     while (1) {
         menu();
 
-        option = input_validation<int>("Choose the option:  ", 0, 7);
+        option = input_validation<int>("Choose the option:  ", 0, 6);
         system("cls");
 
         switch (option) {
@@ -61,25 +54,18 @@ int main() {
 
                 switch (option) {
                 case 1:
-                    add_object(AllPipe);
+                    gtn.add_Pipe();
                     break;
                 case 2:
-                    if (!FilteredPipe.empty()) {
-                        FilteredPipe = filter_by_id(FilteredPipe);
-                    }
-                    else {
-                        cout << "No filtered pipes" << endl << endl;
-                    }
-                    break;
+                    gtn.set_pipes_by_id(1);
                 case 3:
-                    package_edit_pipe(AllPipe, FilteredPipe);
+                    gtn.change_status_of_repair();
                     break;
                 case 4:
-                    delete_by_filter(AllPipe, FilteredPipe);
+                    gtn.delete_selected_pipes();
                     break;
                 case 5:
-                    veiw_all("------------------------------\n          All Pipes\n------------------------------", AllPipe);
-                    veiw_filtered("------------------------------\n        Filtered Pipes\n------------------------------", AllPipe, FilteredPipe);
+                    gtn.print_filtered_pipes();
                     break;
                 }
                 if (option) {
@@ -96,25 +82,19 @@ int main() {
 
                 switch (option) {
                 case 1:
-                    add_object(AllCS);
+                    gtn.add_CS();
                     break;
                 case 2:
-                    if (!FilteredCS.empty()) {
-                        FilteredCS = filter_by_id(FilteredCS);
-                    }
-                    else {
-                        cout << "No filtered CS" << endl << endl;
-                    }
+                    gtn.set_cs_by_id(1);
                     break;
                 case 3:
-                    package_edit_cs(AllCS, FilteredCS);
+                    gtn.change_workload();
                     break;
                 case 4:
-                    delete_by_filter(AllCS, FilteredCS);
+                    gtn.delete_selected_cs();
                     break;
                 case 5:
-                    veiw_all("------------------------------\n   All Compressor Stations\n------------------------------", AllCS);
-                    veiw_filtered("------------------------------\n Filtered Compressor Stations\n------------------------------", AllCS, FilteredCS);
+                    gtn.print_filtered_CS();
                     break;
                 }
                 if (option) {
@@ -123,27 +103,26 @@ int main() {
             } while (option);
             break;
         case 3:
+
+        case 4:
             do {
                 filter_pipes();
 
-                option = input_validation<int>("Choose the option:  ", 0, 5);
+                option = input_validation<int>("Choose the option:  ", 0, 4);
                 system("cls");
 
                 switch (option) {
                 case 1:
-                    select_all(AllPipe, FilteredPipe);
+                    gtn.select_all_pipes();
                     break;
                 case 2:
-                    FilteredPipe = filter_by_id(AllPipe);
+                    gtn.set_pipes_by_id(0);
                     break;
                 case 3:
-                    filter_by_name(AllPipe, FilteredPipe);
+                    gtn.find_pipes_by_name();
                     break;
                 case 4:
-                    filter_by_status_of_repair(AllPipe, FilteredPipe);
-                    break;
-                case 5:
-                    DELETE_OBJECTS(FilteredPipe);
+                    gtn.find_by_status_in_repair();
                     break;
                 }
                 if (option) {
@@ -152,7 +131,7 @@ int main() {
                 
             } while (option);
             break;
-        case 4:
+        case 5:
             do {
                 filter_cs();
 
@@ -161,19 +140,16 @@ int main() {
 
                 switch (option) {
                 case 1:
-                    select_all(AllCS, FilteredCS);
+                    gtn.select_all_pipes();
                     break;
                 case 2:
-                    FilteredCS = filter_by_id(AllCS);
+                    gtn.set_cs_by_id(0);
                     break;
                 case 3:
-                    filter_by_name(AllCS, FilteredCS);
+                    gtn.find_cs_by_name();
                     break;
                 case 4:
-                    filter_by_percent_in_work(AllCS, FilteredCS);
-                    break;
-                case 5:
-                    DELETE_OBJECTS(FilteredCS);
+                    gtn.find_by_percent_in_work();
                     break;
                 }
                 if (option) {
@@ -181,8 +157,9 @@ int main() {
                 }
             } while (option);
             break;
-        case 5:
-            do {
+        case 6:
+            cout << gtn;
+            /*do {
                 veiw_menu();
 
                 option = input_validation<int>("Choose the option:  ", 0, 2);
@@ -201,16 +178,16 @@ int main() {
                 if (option) {
                     pause();
                 }
-            } while (option);
+            } while (option);*/
             break;
         
-        case 6:
-            save_objects(AllPipe, AllCS);
+        case 7:
+            gtn.save_objects();
             pause();
             break;
 
-        case 7:
-            download_objects(AllPipe, AllCS, FilteredPipe, FilteredCS);
+        case 8:
+            gtn.download_objects();
             pause();
             break;
         }
