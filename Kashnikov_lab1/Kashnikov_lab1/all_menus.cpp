@@ -67,17 +67,11 @@ void filter_cs() {
 void gtn_menu() {
     cout << "GTNetwork menu" << endl << endl;
     cout << "1 - Create graph" << endl;
-    cout << "2 - Make TS" << endl;
-    cout << "3 - Edit GTN" << endl;
-    cout << "4 - Print graph" << endl << endl;
-    cout << "0 - Back" << endl << endl;
-}
-
-void edit_gtn_menu() {
-    cout << "Edit GTN" << endl;
-    cout << "1 - Add node" << endl;
-    cout << "2 - Delete pipes" << endl;
-    cout << "3 - Delete CSs" << endl;
-    cout << "4 - Clear graph" << endl << endl;
+    cout << "2 - Add node" << endl;
+    cout << "3 - Delete pipes" << endl;
+    cout << "4 - Delete CSs" << endl;
+    cout << "5 - Clear graph" << endl;
+    cout << "6 - Make TS" << endl;
+    cout << "7 - Print graph" << endl;
     cout << "0 - Back" << endl << endl;
 }

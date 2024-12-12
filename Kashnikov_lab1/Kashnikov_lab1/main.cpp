@@ -38,7 +38,7 @@ int main() {
     while (1) {
         menu();
 
-        option = input_validation<int>("Choose the option:  ", 0, 6);
+        option = input_validation<int>("Choose the option:  ", 0, 8);
         system("cls");
 
         switch (option) {
@@ -58,6 +58,7 @@ int main() {
                     break;
                 case 2:
                     gtn.set_pipes_by_id(1);
+                    break;
                 case 3:
                     gtn.change_status_of_repair();
                     break;
@@ -103,7 +104,41 @@ int main() {
             } while (option);
             break;
         case 3:
+            do {
+                gtn_menu();
 
+                option = input_validation<int>("Choose the option:  ", 0, 7);
+                system("cls");
+
+                switch (option) {
+                case 1:
+                    gtn.create_graph();
+                    break;
+                case 2:
+                    gtn.add_node();
+                    break;
+                case 3:
+                    gtn.delPipeFromGraph();
+                    break;
+                case 4:
+                    gtn.delCSFromGraph();
+                    break;
+                case 5:
+                    gtn.clear_graph();
+                    break;
+                case 6:
+                    gtn.make_TS();
+                    break;
+                case 7:
+                    gtn.print_graph();
+                    break;
+                }
+                if (option) {
+                    pause();
+                }
+
+            } while (option);
+            break;
         case 4:
             do {
                 filter_pipes();
@@ -135,7 +170,7 @@ int main() {
             do {
                 filter_cs();
 
-                option = input_validation<int>("Choose the option:  ", 0, 5);
+                option = input_validation<int>("Choose the option:  ", 0, 4);
                 system("cls");
 
                 switch (option) {

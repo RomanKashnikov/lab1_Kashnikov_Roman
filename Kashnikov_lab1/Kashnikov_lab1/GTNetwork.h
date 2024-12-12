@@ -88,7 +88,7 @@ template<typename T>
 bool GTNetwork::load_obj(ifstream& file, unordered_map<int, T>& objs) {
     T obj(file);
     objs.emplace(obj.get_id(), obj);
-    return 1;
+    return file.good();
 }
 
 template<typename T>

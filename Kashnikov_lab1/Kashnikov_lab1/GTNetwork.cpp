@@ -60,17 +60,16 @@ bool GTNetwork::add_node() {
         input_id = input_validation<int>("Input id:  ", 0, CS::get_MaxID());
     } while (!AllCS.count(output_id) || input_id == output_id);
 
-    cout << "pipe's diameter: ";
     do {
-        diameter = input_validation<int>("Input diameter (500/700/1000/1400):  ", 0, CS::get_MaxID());
+        diameter = input_validation<int>("Input diameter (500/700/1000/1400):  ", 0, 1400);
     } while (!values.count(diameter));
     
+
     int pipe_id = find_by_diameter(diameter);
 
     this->AllCS.at(output_id).addLink(1, pipe_id);
     this->AllPipe.at(pipe_id).set_links(output_id, input_id);
     this->AllCS.at(input_id).addLink(0, pipe_id);
-
     return true;
 }
 
@@ -279,6 +278,7 @@ bool GTNetwork::delPipeFromGraph() {
     while (true) {
         do {
             id = input_validation<int>("Input id:  ", 0, Pipe::get_MaxID());
+            if (id == 0) break;
         } while (!AllPipe.count(id));
 
         if (id == 0) break;
@@ -298,6 +298,7 @@ bool GTNetwork::delCSFromGraph() {
     while (true) {
         do {
             id = input_validation<int>("Input id:  ", 0, CS::get_MaxID());
+            if (id == 0) break;
         } while (!AllCS.count(id));
 
         if (id == 0) break;

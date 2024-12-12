@@ -11,3 +11,5 @@ void veiw_menu();
 void filter_pipes();
 
 void filter_cs();
+
+void gtn_menu();

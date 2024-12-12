@@ -66,6 +66,8 @@ Pipe::Pipe(const int dmtr) {
 
     cout << "Diameter:  " << dmtr << endl << endl;
 
+    id = ++MaxID;
+
     name_validation(name);
 
     lenght = input_validation<double>("Input lenght:  ", 0.000001, 2147483647);

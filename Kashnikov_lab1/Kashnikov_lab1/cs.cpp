@@ -90,7 +90,7 @@ void CS::save(ofstream& file) const {
     if (this->links[1].size())
         for (const auto& id : this->links[1]) file << id << " ";
     else file << 0;
-    //file << endl;
+    file << endl;
 }
 
 
