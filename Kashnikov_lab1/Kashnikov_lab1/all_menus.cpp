@@ -72,6 +72,8 @@ void gtn_menu() {
     cout << "4 - Delete CSs" << endl;
     cout << "5 - Clear graph" << endl;
     cout << "6 - Make TS" << endl;
-    cout << "7 - Print graph" << endl;
+    cout << "7 - Find min path" << endl;
+    cout << "8 - Count max flow" << endl;
+    cout << "9 - Print graph" << endl;
     cout << "0 - Back" << endl << endl;
 }

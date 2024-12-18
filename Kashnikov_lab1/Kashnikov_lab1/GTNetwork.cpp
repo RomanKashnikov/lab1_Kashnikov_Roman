@@ -4,6 +4,8 @@
 #include "GTNetwork.h"
 #include "filter.h"
 #include "Kan_by_Volkov.h"
+#include "Deikstra.h"
+#include "Edmonds_Karp.h"
 
 
 using namespace std;
@@ -64,8 +66,8 @@ bool GTNetwork::add_node() {
         diameter = input_validation<int>("Input diameter (500/700/1000/1400):  ", 0, 1400);
     } while (!values.count(diameter));
     
-
-    int pipe_id = find_by_diameter(diameter);
+    int length = this->getAbsoluteDistance(output_id, input_id);
+    int pipe_id = find_by_diameter(diameter, length);
 
     this->AllCS.at(output_id).addLink(1, pipe_id);
     this->AllPipe.at(pipe_id).set_links(output_id, input_id);
@@ -447,4 +449,141 @@ bool GTNetwork::delete_selected_cs() {
     }
     cout << counter << " CS was erased!" << endl;
     return 1;
+}
+
+unordered_set<int> GTNetwork::get_IncidentPipes(const int& id_1, const int& id_2) {
+    unordered_set<int> result = {};
+    auto neighbours_pipes = this->AllCS.at(id_1).get_links()[1]; // выходящие трубы
+    for (const auto& pipeID : neighbours_pipes) {
+        const Pipe& pipe = this->AllPipe.at(pipeID);
+        if (pipe.get_links()[1] == id_2)
+            result.emplace(pipeID);
+    }
+    return result;
+}
+
+
+int GTNetwork::getDistance(const int& id_1, const int& id_2) {
+    const unordered_set<int> incidentPipes = this->get_IncidentPipes(id_1, id_2);
+    if (!incidentPipes.size())
+        return this->INF;
+
+    for (const auto& pipeID : incidentPipes) {
+        if (this->AllPipe.at(pipeID).get_repair())
+            return this->AllPipe.at(pipeID).get_length();
+    }
+    return this->INF;
+}
+
+
+int GTNetwork::getAbsoluteDistance(const int& id_1, const int& id_2) {
+    int len_1 = this->getDistance(id_1, id_2);
+    int len_2 = this->getDistance(id_2, id_1);
+    return min(len_1, len_2);
+}
+
+
+bool GTNetwork::show_MinPath() {
+    cout << "min path: ";
+    if (!this->min_path.size()) {
+        cout << "cant find min path!" << endl;
+        return 0;
+    }
+    if (this->min_path.size() > 1) {
+        int dist = 0;
+        for (int i = 0; i < this->min_path.size() - 1; ++i) {
+            dist += this->getDistance(this->min_path[i], this->min_path[i + 1]);
+            cout << this->min_path[i] << " ";
+        }
+        cout << this->min_path[this->min_path.size() - 1] << endl;
+        cout << "Distance: " << dist << endl;
+    }
+    else {
+        cout << this->min_path[0] << endl;
+        cout << "Distance: " << 0 << endl;
+    }
+    cout << endl;
+    return 1;
+}
+
+
+bool GTNetwork::find_min_dist() {
+    if (!this->graph.size()) {
+        cout << "No graph" << endl;
+        return 0;
+    }
+    
+    int start_id;
+    int stop_id;
+
+    //старт
+    do {
+        start_id = input_validation<int>("Start id:  ", 0, CS::get_MaxID());
+    } while (!AllCS.count(start_id));
+
+    //конец
+    do {
+        stop_id = input_validation<int>("Stop id:  ", 0, CS::get_MaxID());
+    } while (!AllCS.count(stop_id) || start_id == stop_id);
+
+    this->min_path = this->metodDeikstra(start_id, stop_id);
+
+    return this->show_MinPath();
+}
+
+
+int GTNetwork::getCapacity(const int& id_1, const int& id_2) {
+    const unordered_set<int> incidentPipes = this->get_IncidentPipes(id_1, id_2);
+    int capacity = 0;
+    for (const auto& pipeID : incidentPipes) {
+        capacity += this->AllPipe.at(pipeID).get_MAXperfomance();
+    }
+    return capacity;
+}
+
+
+bool GTNetwork::show_maxFlow() {
+    cout << "max flow path: ";
+    for (const auto& csID : this->maxFlow_path) {
+        cout << csID << " ";
+    }
+    cout << endl;
+
+    cout << "max flow: " << this->maxFlow << endl;
+
+    return 1;
+}
+bool GTNetwork::count_maxFlow() {
+    if (!this->graph.size()) {
+        cout << "No graph!" << endl;
+        cout << "Max flow: 0" << endl;
+        return 0;
+    }
+
+    int source_id;
+    int sink_id;
+
+    //старт
+    do {
+        source_id = input_validation<int>("Source id:  ", 0, CS::get_MaxID());
+    } while (!AllCS.count(source_id));
+
+    //конец
+    do {
+        sink_id = input_validation<int>("Sink id:  ", 0, CS::get_MaxID());
+    } while (!AllCS.count(sink_id) || source_id == sink_id);
+
+    
+    vector<int> flowPath = this->metodDeikstra(source_id, sink_id);
+    if (!flowPath.size()) {
+        cout << "No path to flow: max flow = 0" << endl;
+    }
+    else if (flowPath.size() == 1) {
+        cout << "max flow: INF" << endl;
+        cout << "max flow path: " << flowPath[0] << endl;
+    }
+    else {
+        this->maxFlow = this->edmondsKarp<int>(source_id, sink_id);
+        return this->show_maxFlow();
+    }
 }

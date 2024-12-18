@@ -28,6 +28,14 @@ int Pipe::get_diameter() const {
     return this->diameter;
 }
 
+int Pipe::get_length() const {
+    return this->lenght;
+}
+
+int Pipe::get_MAXperfomance() const {
+    return this->MAXperfomance * this->repair;
+}
+
 bool Pipe::get_repair() const {
     return this->repair;
 }
@@ -57,11 +65,12 @@ Pipe::Pipe() {
     id = ++MaxID;
     lenght = 0;
     diameter = 0;
+    MAXperfomance = 0;
     repair = false;
     name = "No Name";
 }
 
-Pipe::Pipe(const int dmtr) {
+Pipe::Pipe(const int& dmtr, const int& lenght) {
     cout << "Add a Pipe:" << endl << endl;
 
     cout << "Diameter:  " << dmtr << endl << endl;
@@ -70,9 +79,16 @@ Pipe::Pipe(const int dmtr) {
 
     name_validation(name);
 
-    lenght = input_validation<double>("Input lenght:  ", 0.000001, 2147483647);
+    if (lenght != std::numeric_limits<int>::max()) {
+        this->lenght = lenght;
+    }
+    else {
+        this->lenght = input_validation<double>("Input lenght:  ", 0.000001, 2147483647);
+    }
 
     diameter = dmtr;
+
+    MAXperfomance = dictPerfomances.at(diameter);
 
     repair = input_validation<bool>("Is in repair? (1-Yes/0-No):  ", 0, 1);
 }
@@ -83,6 +99,7 @@ void Pipe::save(ofstream& file) const {
     file << this->name << endl;
     file << this->lenght << endl;
     file << this->diameter << endl;
+    file << this->MAXperfomance << endl;
     file << this->repair << endl;
     file << this->links[0] << endl;
     file << this->links[1] << endl;
@@ -94,6 +111,7 @@ Pipe::Pipe(ifstream& file) {
     getline(file >> ws, this->name);
     file >> this->lenght;
     file >> this->diameter;
+    file >> this->MAXperfomance;
     file >> this->repair;
     file >> this->links[0];
     file >> this->links[1];
@@ -107,7 +125,11 @@ istream& operator>>(istream& in, Pipe& pipe) {
 
     pipe.lenght = input_validation<double>("Input lenght:  ", 0.000001, 2147483647);
 
-    pipe.diameter = input_validation<int>("Input diameter:  ", 1, 2147483647);
+    do {
+        pipe.diameter = input_validation<int>("Input diameter (500/700/1000/1400):  ", 500, 1400);
+    } while (pipe.diameter != 500 && pipe.diameter != 700 && pipe.diameter != 1000 && pipe.diameter != 1400);
+
+    pipe.MAXperfomance = pipe.dictPerfomances.at(pipe.diameter);
 
     pipe.repair = input_validation<bool>("Is in repair? (1-Yes/0-No):  ", 0, 1);
 
@@ -119,6 +141,7 @@ ostream& operator<<(ostream& out, const Pipe& pipe) {
         "Name: " << pipe.name << endl <<
         "Diameter: " << pipe.diameter << endl <<
         "Lenght: " << pipe.lenght << endl <<
+        "Perfomance: " << pipe.MAXperfomance << endl <<
         "Status of repair: " << (pipe.repair ? "Yes" : "No") << endl << endl
         
         << "Links{" << endl

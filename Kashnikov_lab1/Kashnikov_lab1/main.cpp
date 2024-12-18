@@ -107,7 +107,7 @@ int main() {
             do {
                 gtn_menu();
 
-                option = input_validation<int>("Choose the option:  ", 0, 7);
+                option = input_validation<int>("Choose the option:  ", 0, 9);
                 system("cls");
 
                 switch (option) {
@@ -130,6 +130,12 @@ int main() {
                     gtn.make_TS();
                     break;
                 case 7:
+                    gtn.find_min_dist();
+                    break;
+                case 8:
+                    gtn.count_maxFlow();
+                    break;
+                case 9:
                     gtn.print_graph();
                     break;
                 }
@@ -194,26 +200,7 @@ int main() {
             break;
         case 6:
             cout << gtn;
-            /*do {
-                veiw_menu();
-
-                option = input_validation<int>("Choose the option:  ", 0, 2);
-                system("cls");
-
-                switch (option) {
-                case 1:
-                    veiw_all("------------------------------\n          All Pipes\n------------------------------", AllPipe);
-                    veiw_all("------------------------------\n   All Compressor Stations\n------------------------------", AllCS);
-                    break;
-                case 2:
-                    veiw_filtered("------------------------------\n        Filtered Pipes\n------------------------------", AllPipe, FilteredPipe);
-                    veiw_filtered("------------------------------\n Filtered Compressor Stations\n------------------------------", AllCS, FilteredCS);
-                    break;
-                }
-                if (option) {
-                    pause();
-                }
-            } while (option);*/
+            pause();
             break;
         
         case 7:

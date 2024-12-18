@@ -30,6 +30,8 @@
   <ItemGroup>
     <ClInclude Include="all_menus.h" />
     <ClInclude Include="cs.h" />
+    <ClInclude Include="Deikstra.h" />
+    <ClInclude Include="Edmonds_Karp.h" />
     <ClInclude Include="filter.h" />
     <ClInclude Include="GTNetwork.h" />
     <ClInclude Include="Kan_by_Volkov.h" />
