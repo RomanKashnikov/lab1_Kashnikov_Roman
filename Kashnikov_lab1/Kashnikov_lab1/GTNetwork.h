@@ -54,13 +54,13 @@ private:
     vector<T> metodDeikstra(T StartNode, T EndNode);
 
     template<typename T>
-    bool bfs(T s, T t, vector<T>& parent, unordered_map<T, unordered_map<T, int>>& capacity);
+    bool bfs(T s, T t, unordered_map<T, T>& parent, unordered_map<T, unordered_map<T, int>>& capacity);
 
     template<typename T>
     int edmondsKarp(const T& source, const T& sink);
 
     template<typename T>
-    vector<T> getMAXFlowPath(const T& source, const T& sink, vector<T>& parent);
+    vector<T> getMAXFlowPath(const T& source, const T& sink, const unordered_map<T, T>& parent);
 
     bool show_MinPath();
     bool show_maxFlow();
